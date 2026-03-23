@@ -33,7 +33,18 @@ from sklearn.metrics import f1_score, confusion_matrix
 
 ## Read the Dataset
 TRAIN_PATH = os.path.join(os.getcwd(), 'dataset.csv')
-df = pd.read_csv(TRAIN_PATH)
+
+df = pd.read_csv(TRAIN_PATH, sep=",", encoding="utf-8")
+
+# Fix numeric columns (replace comma and convert to float)
+for col in ['Age', 'CreditScore', 'Balance', 'EstimatedSalary']:
+    # remove thousand separators then coerce invalid values to NaN
+    if col in df.columns:
+        df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', '', regex=False), errors='coerce')
+
+
+
+
 
 ## Drop first 3 features
 df.drop(columns=['RowNumber', 'CustomerId', 'Surname'], axis=1, inplace=True)
